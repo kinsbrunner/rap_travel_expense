@@ -7,10 +7,12 @@
 @ObjectModel.sapObjectNodeType.name: 'ZAK_Trip'
 
 define root view entity ZAK_R_TRIP
-  as select from ZAK_TRIP as Trip
+  as select from zak_trip as Trip
 
   composition [1..*] of ZAK_R_EXPENSE as _Expense
-
+  association [1..1] to ZAK_I_TripType_VH as _TripType on Trip.trip_type = _TripType.TripTypeCode
+  association [1..1] to ZAK_I_Status_VH as _Status on Trip.status = _Status.StatusCode
+  
 {
   key uuid                  as UUID,
 
@@ -43,5 +45,7 @@ define root view entity ZAK_R_TRIP
       @Semantics.systemDateTime.lastChangedAt: true
       last_changed_at       as LastChangedAt,
 
-      _Expense
+      _Expense,
+      _TripType,
+      _Status
 }

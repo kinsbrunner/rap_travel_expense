@@ -7,6 +7,8 @@
 ],
 "ASSOCIATED":
 [
+"ZAK_I_STATUS_VH",
+"ZAK_I_TRIPTYPE_VH",
 "ZAK_R_EXPENSE"
 ],
 "BASE":

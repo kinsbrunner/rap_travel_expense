@@ -31,12 +31,14 @@ annotate view ZAK_C_TRIP with
   @UI.identification: [ { position: 30 } ]
   @UI.lineItem: [ { position: 30 } ]
   @UI.selectionField: [ { position: 30 } ]
+  @UI.textArrangement: #TEXT_FIRST
   TripType;
 
   @EndUserText.label: 'Status'
   @UI.identification: [ { position: 40 } ]
   @UI.lineItem: [ { position: 40 } ]
   @UI.selectionField: [ { position: 40 } ]
+  @UI.textArrangement: #TEXT_ONLY
   Status;
 
   @EndUserText.label: 'Total'
