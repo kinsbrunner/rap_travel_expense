@@ -1,126 +1,56 @@
 @Metadata.layer: #CORE
-@UI.headerInfo.title.type: #STANDARD
-@UI.headerInfo.title.value: 'UUID'
-@UI.headerInfo.description.type: #STANDARD
-@UI.headerInfo.description.value: 'UUID'
+
+@UI.headerInfo: { title: { type: #STANDARD, value: 'Description' },
+                  description: { type: #STANDARD, value: 'Category' } }
+
 annotate view ZAK_C_EXPENSE with
+
 {
-  @UI.facet: [ {
-    label: 'General Information', 
-    id: 'GeneralInfo', 
-    purpose: #STANDARD, 
-    position: 10 , 
-    type: #IDENTIFICATION_REFERENCE
-  } ]
   @EndUserText.label: 'UUID'
-  @UI.identification: [ {
-    position: 10 , 
-    label: 'UUID'
-  } ]
-  @UI.lineItem: [ {
-    position: 10 , 
-    label: 'UUID'
-  } ]
-  @UI.selectionField: [ {
-    position: 10 
-  } ]
+  @UI.facet: [ { label: 'Expense Details',
+                 id: 'GeneralInfo',
+                 purpose: #STANDARD,
+                 position: 10,
+                 type: #IDENTIFICATION_REFERENCE } ]
+  @UI.hidden: true
   UUID;
-  
-  @EndUserText.label: 'ParentUUID'
-  @UI.identification: [ {
-    position: 20 , 
-    label: 'ParentUUID'
-  } ]
-  @UI.lineItem: [ {
-    position: 20 , 
-    label: 'ParentUUID'
-  } ]
-  @UI.selectionField: [ {
-    position: 20 
-  } ]
+
+  @UI.hidden: true
   ParentUUID;
-  
-  @EndUserText.label: 'TransactionType'
-  @UI.identification: [ {
-    position: 30 , 
-    label: 'TransactionType'
-  } ]
-  @UI.lineItem: [ {
-    position: 30 , 
-    label: 'TransactionType'
-  } ]
-  @UI.selectionField: [ {
-    position: 30 
-  } ]
+
+  @EndUserText.label: 'Transaction Type'
+  @UI.identification: [ { position: 30 } ]
+  @UI.lineItem: [ { position: 30 } ]
+  @UI.selectionField: [ { position: 30 } ]
   TransactionType;
-  
+
   @EndUserText.label: 'Category'
-  @UI.identification: [ {
-    position: 40 , 
-    label: 'Category'
-  } ]
-  @UI.lineItem: [ {
-    position: 40 , 
-    label: 'Category'
-  } ]
-  @UI.selectionField: [ {
-    position: 40 
-  } ]
+  @UI.identification: [ { position: 40 } ]
+  @UI.lineItem: [ { position: 40 } ]
+  @UI.selectionField: [ { position: 40 } ]
   Category;
-  
+
   @EndUserText.label: 'Price'
-  @UI.identification: [ {
-    position: 50 , 
-    label: 'Price'
-  } ]
-  @UI.lineItem: [ {
-    position: 50 , 
-    label: 'Price'
-  } ]
-  @UI.selectionField: [ {
-    position: 50 
-  } ]
+  @UI.identification: [ { position: 50 } ]
+  @UI.lineItem: [ { position: 50 } ]
+  @UI.selectionField: [ { position: 50 } ]
   Price;
-  
+
   @EndUserText.label: 'Description'
-  @UI.identification: [ {
-    position: 60 , 
-    label: 'Description'
-  } ]
-  @UI.lineItem: [ {
-    position: 60 , 
-    label: 'Description'
-  } ]
-  @UI.selectionField: [ {
-    position: 60 
-  } ]
+  @UI.identification: [ { position: 60 } ]
+  @UI.lineItem: [ { position: 60 } ]
+  @UI.selectionField: [ { position: 60 } ]
   Description;
-  
-  @EndUserText.label: 'ExpenseDate'
-  @UI.identification: [ {
-    position: 70 , 
-    label: 'ExpenseDate'
-  } ]
-  @UI.lineItem: [ {
-    position: 70 , 
-    label: 'ExpenseDate'
-  } ]
-  @UI.selectionField: [ {
-    position: 70 
-  } ]
+
+  @EndUserText.label: 'Expense Date'
+  @UI.identification: [ { position: 70 } ]
+  @UI.lineItem: [ { position: 70 } ]
+  @UI.selectionField: [ { position: 70 } ]
   ExpenseDate;
-  
-  @EndUserText.label: 'TicketImage'
-  @UI.identification: [ {
-    position: 80 , 
-    label: 'TicketImage'
-  } ]
-  @UI.lineItem: [ {
-    position: 80 , 
-    label: 'TicketImage'
-  } ]
-  @UI.selectionField: [ {
-    position: 80 
-  } ]
+
+  @EndUserText.label: 'Ticket Image'
+  @UI.identification: [ { position: 80 } ]
+  @UI.lineItem: [ { position: 80 } ]
+  @UI.selectionField: [ { position: 80 } ]
   TicketImage;
 }

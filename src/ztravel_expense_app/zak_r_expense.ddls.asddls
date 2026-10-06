@@ -1,24 +1,31 @@
 @AccessControl.authorizationCheck: #MANDATORY
-@Metadata.allowExtensions: true
+
 @EndUserText.label: '###GENERATED Core Data Service Entity'
+
+@Metadata.allowExtensions: true
+
 define view entity ZAK_R_EXPENSE
-  as select from ZAK_EXPENSE as Expense
-  association to parent ZAK_R_TRIP as _Trip on $projection.ParentUuid = _Trip.Uuid
+  as select from zak_expense as Expense
+
+  association to parent ZAK_R_TRIP as _Trip on $projection.ParentUUID = _Trip.UUID
+
 {
-  key uuid as UUID,
-  parent_uuid as ParentUUID,
-  transaction_type as TransactionType,
-  category as Category,
-  @Consumption.valueHelpDefinition: [ {
-    entity.name: 'I_CurrencyStdVH', 
-    entity.element: 'Currency', 
-    useForValidation: true
-  } ]
-  currency as Currency,
-  @Semantics.amount.currencyCode: 'Currency'
-  price as Price,
-  description as Description,
-  expense_date as ExpenseDate,
-  ticket_image as TicketImage,
-  _Trip
+  key uuid             as UUID,
+
+      parent_uuid      as ParentUUID,
+      transaction_type as TransactionType,
+      category         as Category,
+
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CurrencyStdVH', element: 'Currency' },
+                                            useForValidation: true } ]
+      currency         as Currency,
+
+      @Semantics.amount.currencyCode: 'Currency'
+      price            as Price,
+
+      description      as Description,
+      expense_date     as ExpenseDate,
+      ticket_image     as TicketImage,
+
+      _Trip
 }
