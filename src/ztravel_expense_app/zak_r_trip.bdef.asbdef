@@ -82,7 +82,9 @@ authorization dependent by _Trip
     Price = PRICE;
     Description = DESCRIPTION;
     ExpenseDate = EXPENSE_DATE;
-    TicketImage = TICKET_IMAGE;
+    TicketAttachement = ticket_attachment;
+    TicketMimetype = ticket_mimetype;
+    TicketFilename = ticket_filename;
   }
 
   association _Trip { with draft; }

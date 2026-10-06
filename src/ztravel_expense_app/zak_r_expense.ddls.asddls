@@ -10,22 +10,24 @@ define view entity ZAK_R_EXPENSE
   association to parent ZAK_R_TRIP as _Trip on $projection.ParentUUID = _Trip.UUID
 
 {
-  key uuid             as UUID,
+  key uuid              as UUID,
 
-      parent_uuid      as ParentUUID,
-      transaction_type as TransactionType,
-      category         as Category,
+      parent_uuid       as ParentUUID,
+      transaction_type  as TransactionType,
+      category          as Category,
 
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CurrencyStdVH', element: 'Currency' },
                                             useForValidation: true } ]
-      currency         as Currency,
+      currency          as Currency,
 
       @Semantics.amount.currencyCode: 'Currency'
-      price            as Price,
+      price             as Price,
 
-      description      as Description,
-      expense_date     as ExpenseDate,
-      ticket_image     as TicketImage,
+      description       as Description,
+      expense_date      as ExpenseDate,
+      ticket_attachment as TicketAttachement,
+      ticket_mimetype   as TicketMimetype,
+      ticket_filename   as TicketFilename,
 
       _Trip
 }

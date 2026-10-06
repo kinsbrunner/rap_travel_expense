@@ -48,9 +48,15 @@ annotate view ZAK_C_EXPENSE with
   @UI.selectionField: [ { position: 70 } ]
   ExpenseDate;
 
-  @EndUserText.label: 'Ticket Image'
+  @EndUserText.label: 'Ticket Upload'
   @UI.identification: [ { position: 80 } ]
   @UI.lineItem: [ { position: 80 } ]
   @UI.selectionField: [ { position: 80 } ]
-  TicketImage;
+  ticketattachement;
+
+  @UI.hidden: true
+  ticketmimetype;
+
+  @UI.hidden: true
+  ticketfilename;
 }
