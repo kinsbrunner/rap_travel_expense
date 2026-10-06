@@ -1,0 +1,90 @@
+managed implementation in class ZAK_BP_R_TRIP unique;
+strict ( 2 );
+with draft;
+extensible;
+define behavior for ZAK_R_TRIP alias Trip
+persistent table ZAK_TRIP
+extensible
+draft table ZAK_TRIP_D
+etag master LocalLastChangedAt
+lock master total etag LastChangedAt
+authorization master( global )
+{
+  field ( readonly )
+   UUID,
+   LocalCreatedBy,
+   LocalCreatedAt,
+   LocalLastChangedBy,
+   LocalLastChangedAt,
+   LastChangedAt;
+
+  field ( numbering : managed )
+   UUID;
+
+
+  create;
+  update;
+  delete;
+
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for ZAK_TRIP corresponding extensible
+  {
+    UUID = UUID;
+    Title = TITLE;
+    TripType = TRIP_TYPE;
+    Status = STATUS;
+    Currency = CURRENCY;
+    Total = TOTAL;
+    StartDate = START_DATE;
+    EndDate = END_DATE;
+    LocalCreatedBy = LOCAL_CREATED_BY;
+    LocalCreatedAt = LOCAL_CREATED_AT;
+    LocalLastChangedBy = LOCAL_LAST_CHANGED_BY;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    LastChangedAt = LAST_CHANGED_AT;
+  }
+
+  association _Expense { create; with draft; }
+
+}
+
+define behavior for ZAK_R_EXPENSE alias Expense
+persistent table ZAK_EXPENSE
+extensible
+draft table ZAK_EXPENSE_D
+etag dependent by _Trip
+lock dependent by _Trip
+authorization dependent by _Trip
+{
+  field ( readonly )
+   UUID,
+   ParentUUID;
+
+  field ( numbering : managed )
+   UUID;
+
+
+  update;
+  delete;
+
+  mapping for ZAK_EXPENSE corresponding extensible
+  {
+    UUID = UUID;
+    ParentUUID = PARENT_UUID;
+    TransactionType = TRANSACTION_TYPE;
+    Category = CATEGORY;
+    Currency = CURRENCY;
+    Price = PRICE;
+    Description = DESCRIPTION;
+    ExpenseDate = EXPENSE_DATE;
+    TicketImage = TICKET_IMAGE;
+  }
+
+  association _Trip { with draft; }
+
+}

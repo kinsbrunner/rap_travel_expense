@@ -1,0 +1,12 @@
+@EndUserText: {
+  label: 'Service Definition for ZAK_C_TRIP'
+}
+@ObjectModel: {
+  leadingEntity: {
+    name: 'ZAK_C_TRIP'
+  }
+}
+define service ZAK_UI_TRIP_O4 provider contracts odata_v4_ui {
+  expose ZAK_C_TRIP as Trip;
+  expose ZAK_C_EXPENSE as Expense;
+}

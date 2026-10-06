@@ -1,0 +1,6 @@
+@EndUserText.label: 'ZAK_C_EXPENSE'
+@MappingRole: true
+define role ZAK_C_EXPENSE {
+  grant select on ZAK_C_EXPENSE
+  where INHERITING CONDITIONS FROM ENTITY ZAK_R_EXPENSE REPLACING { ROOT WITH _BaseEntity };
+}
