@@ -22,12 +22,14 @@ annotate view ZAK_C_EXPENSE with
   @UI.identification: [ { position: 30 } ]
   @UI.lineItem: [ { position: 30 } ]
   @UI.selectionField: [ { position: 30 } ]
+  @UI.textArrangement: #TEXT_ONLY
   TransactionType;
 
   @EndUserText.label: 'Category'
   @UI.identification: [ { position: 40 } ]
   @UI.lineItem: [ { position: 40 } ]
   @UI.selectionField: [ { position: 40 } ]
+  @UI.textArrangement: #TEXT_ONLY
   Category;
 
   @EndUserText.label: 'Price'
@@ -52,11 +54,11 @@ annotate view ZAK_C_EXPENSE with
   @UI.identification: [ { position: 80 } ]
   @UI.lineItem: [ { position: 80 } ]
   @UI.selectionField: [ { position: 80 } ]
-  ticketattachement;
+  TicketAttachement;
 
   @UI.hidden: true
-  ticketmimetype;
+  TicketMimetype;
 
   @UI.hidden: true
-  ticketfilename;
+  TicketFilename;
 }

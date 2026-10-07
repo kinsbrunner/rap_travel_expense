@@ -1,6 +1,6 @@
 @AccessControl.authorizationCheck: #MANDATORY
 
-@EndUserText.label: '###GENERATED Core Data Service Entity'
+@EndUserText.label: 'Trip Expenses'
 
 @Metadata.allowExtensions: true
 @Metadata.ignorePropagatedAnnotations: true
