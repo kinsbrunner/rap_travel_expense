@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZMSG_TRIP</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Trip message class</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_TRIP</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>&amp;1 &amp;2 &amp;3 &amp;4</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_TRIP</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Trip &amp;1: Field &amp;2 can&apos;t be empty.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_TRIP</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Expense &amp;1: Field &amp;2 can&apos;t be empty.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_TRIP</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Trip &amp;1: Start date must not occur later than End date.</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

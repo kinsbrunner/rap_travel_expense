@@ -3,24 +3,27 @@ strict ( 2 );
 with draft;
 extensible;
 define behavior for ZAK_R_TRIP alias Trip
-persistent table ZAK_TRIP
+persistent table zak_trip
 extensible
-draft table ZAK_TRIP_D
+draft table zak_trip_d
 etag master LocalLastChangedAt
 lock master total etag LastChangedAt
-authorization master( global )
+authorization master ( global )
 {
   field ( readonly )
-   UUID,
-   LocalCreatedBy,
-   LocalCreatedAt,
-   LocalLastChangedBy,
-   LocalLastChangedAt,
-   LastChangedAt;
+  UUID,
+  LocalCreatedBy,
+  LocalCreatedAt,
+  LocalLastChangedBy,
+  LocalLastChangedAt,
+  LastChangedAt,
+  total,
+  currency;
 
   field ( numbering : managed )
-   UUID;
+  UUID;
 
+  field ( mandatory ) Title, TripType, StartDate, EndDate, Status;
 
   create;
   update;
@@ -32,60 +35,66 @@ authorization master( global )
   draft action Resume;
   draft determine action Prepare;
 
-  mapping for ZAK_TRIP corresponding extensible
-  {
-    UUID = UUID;
-    Title = TITLE;
-    TripType = TRIP_TYPE;
-    Status = STATUS;
-    Currency = CURRENCY;
-    Total = TOTAL;
-    StartDate = START_DATE;
-    EndDate = END_DATE;
-    LocalCreatedBy = LOCAL_CREATED_BY;
-    LocalCreatedAt = LOCAL_CREATED_AT;
-    LocalLastChangedBy = LOCAL_LAST_CHANGED_BY;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-    LastChangedAt = LAST_CHANGED_AT;
-  }
+  validation check_mandatory_fields on save { create; update; }
+  validation start_prior_to_end_date on save { create; update; }
+
+  mapping for zak_trip corresponding extensible
+    {
+      UUID               = UUID;
+      Title              = TITLE;
+      TripType           = TRIP_TYPE;
+      Status             = STATUS;
+      Currency           = CURRENCY;
+      Total              = TOTAL;
+      StartDate          = START_DATE;
+      EndDate            = END_DATE;
+      LocalCreatedBy     = LOCAL_CREATED_BY;
+      LocalCreatedAt     = LOCAL_CREATED_AT;
+      LocalLastChangedBy = LOCAL_LAST_CHANGED_BY;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+      LastChangedAt      = LAST_CHANGED_AT;
+    }
 
   association _Expense { create; with draft; }
 
 }
 
 define behavior for ZAK_R_EXPENSE alias Expense
-persistent table ZAK_EXPENSE
+persistent table zak_expense
 extensible
-draft table ZAK_EXPENSE_D
+draft table zak_expense_d
 etag dependent by _Trip
 lock dependent by _Trip
 authorization dependent by _Trip
 {
   field ( readonly )
-   UUID,
-   ParentUUID;
+  UUID,
+  ParentUUID;
 
   field ( numbering : managed )
-   UUID;
+  UUID;
 
+  field ( mandatory ) TransactionType, Category, Currency, Price, Description;
 
   update;
   delete;
 
-  mapping for ZAK_EXPENSE corresponding extensible
-  {
-    UUID = UUID;
-    ParentUUID = PARENT_UUID;
-    TransactionType = TRANSACTION_TYPE;
-    Category = CATEGORY;
-    Currency = CURRENCY;
-    Price = PRICE;
-    Description = DESCRIPTION;
-    ExpenseDate = EXPENSE_DATE;
-    TicketAttachement = ticket_attachment;
-    TicketMimetype = ticket_mimetype;
-    TicketFilename = ticket_filename;
-  }
+  validation check_mandatory_fields on save { create; update; }
+
+  mapping for zak_expense corresponding extensible
+    {
+      UUID              = UUID;
+      ParentUUID        = PARENT_UUID;
+      TransactionType   = TRANSACTION_TYPE;
+      Category          = CATEGORY;
+      Currency          = CURRENCY;
+      Price             = PRICE;
+      Description       = DESCRIPTION;
+      ExpenseDate       = EXPENSE_DATE;
+      TicketAttachement = ticket_attachment;
+      TicketMimetype    = ticket_mimetype;
+      TicketFilename    = ticket_filename;
+    }
 
   association _Trip { with draft; }
 
