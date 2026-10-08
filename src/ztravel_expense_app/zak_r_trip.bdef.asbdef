@@ -33,7 +33,15 @@ authorization master ( global )
   draft action Discard;
   draft action ( features : instance ) Edit;
   draft action Resume;
-  draft determine action Prepare;
+  draft determine action Prepare
+  {
+    validation check_mandatory_fields;
+    validation check_start_prior_to_end_date;
+    validation Expense~check_mandatory_fields;
+    validation Expense~check_expense_date_within_trip;
+    validation Expense~check_amount_is_possitive;
+  }
+
 
   field ( features : instance ) Status;
   field ( features : instance, mandatory ) Title;
@@ -41,7 +49,7 @@ authorization master ( global )
   association _Expense { create ( features : instance ); with draft; }
 
   validation check_mandatory_fields on save { create; update; }
-  validation start_prior_to_end_date on save { create; update; }
+  validation check_start_prior_to_end_date on save { create; update; }
   determination set_initial_status on save { create; }
 
   side effects
@@ -89,6 +97,8 @@ authorization dependent by _Trip
   delete;
 
   validation check_mandatory_fields on save { create; update; }
+  validation check_expense_date_within_trip on save { create; update; }
+  validation check_amount_is_possitive on save { create; update; }
   determination update_totals on modify { create; delete; field Price; }
 
   side effects
