@@ -18,7 +18,6 @@ use etag
   use action Prepare;
 
   use association _Expense { create; with draft; }
-
 }
 
 define behavior for ZAK_C_EXPENSE alias Expense

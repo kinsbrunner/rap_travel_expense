@@ -23,7 +23,7 @@ authorization master ( global )
   field ( numbering : managed )
   UUID;
 
-  field ( mandatory ) Title, TripType, StartDate, EndDate, Status;
+  field ( mandatory ) Title, TripType, StartDate, EndDate; //, Status;
 
   create;
   update;
@@ -35,8 +35,16 @@ authorization master ( global )
   draft action Resume;
   draft determine action Prepare;
 
+  field ( features : instance ) Status;
+
   validation check_mandatory_fields on save { create; update; }
   validation start_prior_to_end_date on save { create; update; }
+  determination set_initial_status on save { create; }
+
+  side effects
+  {
+    entity _Expense affects field Total;
+  }
 
   mapping for zak_trip corresponding extensible
     {
@@ -80,6 +88,12 @@ authorization dependent by _Trip
   delete;
 
   validation check_mandatory_fields on save { create; update; }
+  determination update_totals on modify { create; delete; field Price; }
+
+  side effects
+  {
+    field Price affects field _Trip.Total;
+  }
 
   mapping for zak_expense corresponding extensible
     {

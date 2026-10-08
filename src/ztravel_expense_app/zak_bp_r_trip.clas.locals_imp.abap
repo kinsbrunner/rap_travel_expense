@@ -4,6 +4,8 @@ CLASS lhc_expense DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS check_mandatory_fields FOR VALIDATE ON SAVE
       keys FOR Expense~check_mandatory_fields.
+    METHODS update_totals FOR DETERMINE ON MODIFY
+      keys FOR Expense~update_totals.
 
 ENDCLASS.
 
@@ -64,6 +66,74 @@ CLASS lhc_expense IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+  METHOD update_totals.
+    DATA trips_update TYPE TABLE FOR UPDATE zak_r_trip\\Trip.
+
+    " Parent trips of the created/changed/deleted expenses (draft-aware via %tky).
+    " Read by association so that deleted expenses still resolve their parent.
+    READ ENTITIES OF zak_r_trip IN LOCAL MODE
+         ENTITY Expense BY \_Trip
+         FIELDS ( Total Currency )
+         WITH CORRESPONDING #( keys )
+         RESULT DATA(trips).
+
+    IF trips IS INITIAL.
+      " Delete: the expense is no longer readable via EML, get its parent from the draft table
+      SELECT FROM zak_expense_d
+        FIELDS DISTINCT parentuuid
+        FOR ALL ENTRIES IN @keys
+        WHERE uuid = @keys-uuid
+        INTO TABLE @DATA(parents).
+
+      trips = VALUE #( FOR parent IN parents
+                       ( %is_draft = if_abap_behv=>mk-on
+                         uuid      = parent-parentuuid ) ).
+      IF trips IS INITIAL.
+        RETURN.
+      ENDIF.
+    ENDIF.
+
+    SORT trips BY %tky.
+    DELETE ADJACENT DUPLICATES FROM trips COMPARING %tky.
+    IF trips IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    " All current expenses of those trips in one read (deleted ones are not returned)
+    READ ENTITIES OF zak_r_trip IN LOCAL MODE
+         ENTITY Trip BY \_Expense
+         FIELDS ( ParentUUID Price Currency ExpenseDate )
+         WITH CORRESPONDING #( trips )
+         RESULT DATA(expenses).
+
+    LOOP AT trips INTO DATA(trip).
+      DATA(total) = VALUE zak_r_trip-Total( ).
+
+      LOOP AT expenses INTO DATA(expense)
+           WHERE     ParentUUID = trip-uuid
+                 AND %is_draft  = trip-%is_draft.
+
+        total += expense-Price.
+
+      ENDLOOP.
+
+      APPEND VALUE #( %tky           = trip-%tky
+                      Total          = total
+                      %control-Total = if_abap_behv=>mk-on )
+             TO trips_update.
+    ENDLOOP.
+
+    IF trips_update IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    MODIFY ENTITIES OF zak_r_trip IN LOCAL MODE
+           ENTITY Trip
+           UPDATE FROM trips_update
+           REPORTED DATA(update_reported).
+
+    reported-trip = CORRESPONDING #( DEEP update_reported-trip ).
+  ENDMETHOD.
 ENDCLASS.
 
 CLASS lhc_zak_r_trip DEFINITION INHERITING FROM cl_abap_behavior_handler.
@@ -76,7 +146,11 @@ CLASS lhc_zak_r_trip DEFINITION INHERITING FROM cl_abap_behavior_handler.
       check_mandatory_fields FOR VALIDATE ON SAVE
        keys FOR Trip~check_mandatory_fields,
       start_prior_to_end_date FOR VALIDATE ON SAVE
-            keys FOR Trip~start_prior_to_end_date.
+            keys FOR Trip~start_prior_to_end_date,
+      set_initial_status FOR DETERMINE ON SAVE
+            keys FOR Trip~set_initial_status,
+      get_instance_features FOR INSTANCE FEATURES
+            keys REQUEST requested_features FOR Trip RESULT result.
 ENDCLASS.
 
 CLASS lhc_zak_r_trip IMPLEMENTATION.
@@ -158,6 +232,37 @@ CLASS lhc_zak_r_trip IMPLEMENTATION.
                                           number   = 003
                                           severity = if_Abap_behv_message=>severity-error
                                           v1       = |{ ls_trip-uuid }| ) ) TO reported-trip.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD set_initial_status.
+    MODIFY ENTITIES OF ZAK_R_Trip IN LOCAL MODE
+      ENTITY Trip
+      UPDATE
+      FIELDS ( Status )
+      WITH VALUE #( FOR key IN keys
+                      ( %key   = key-%key
+                        Status = zak_if_trip=>co_status-initial ) )
+      REPORTED DATA(ls_reported).
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+    " Get the root node. In a Fiori Elements UI this will be just one entry. But, when being called via EML or as an API,
+    "  several instances of Trip can be requested.
+    READ ENTITIES OF ZAK_R_Trip IN LOCAL MODE
+      ENTITY Trip
+      FIELDS ( Status )
+      WITH CORRESPONDING #( keys )
+      RESULT DATA(trips).
+
+    " Loop the nodes and set the Mandatory field either to read-only or mandatory based on the
+    "  value of Status field
+    LOOP AT trips INTO DATA(trip).
+      APPEND VALUE #( %tky = trip-%tky
+                      " This is for preventing Status from being set during Create
+                      %field-Status       = COND #( WHEN trip-status IS INITIAL
+                                                    THEN if_abap_behv=>fc-f-read_only
+                                                    ELSE if_abap_behv=>fc-f-unrestricted ) ) TO result.
     ENDLOOP.
   ENDMETHOD.
 
