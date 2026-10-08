@@ -3,6 +3,8 @@
 @UI.headerInfo: { title: { type: #STANDARD, value: 'Title' },
                   description: { type: #STANDARD, value: 'Status' } }
 
+@UI.lineItem: [{criticality: 'StatusIcon'}]
+
 annotate view ZAK_C_TRIP with
 
 {
@@ -35,11 +37,14 @@ annotate view ZAK_C_TRIP with
   TripType;
 
   @EndUserText.label: 'Status'
-  @UI.identification: [ { position: 40 } ]
-  @UI.lineItem: [ { position: 40 } ]
+  @UI.identification: [ { position: 40, criticality: 'StatusIcon', criticalityRepresentation: #WITH_ICON } ]
+  @UI.lineItem: [ { position: 40, criticality: 'StatusIcon', criticalityRepresentation: #WITH_ICON } ]
   @UI.selectionField: [ { position: 40 } ]
   @UI.textArrangement: #TEXT_ONLY
   Status;
+
+  @UI.adaptationHidden: true
+  StatusIcon;
 
   @EndUserText.label: 'Total'
   @UI.identification: [ { position: 50 } ]

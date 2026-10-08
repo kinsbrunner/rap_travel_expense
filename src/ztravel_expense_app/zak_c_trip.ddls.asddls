@@ -31,6 +31,8 @@ define root view entity ZAK_C_TRIP
       Status,
       _Status.StatusText as StatusText,
 
+      StatusIcon,
+
       @Consumption.valueHelpDefinition: [ { entity: { element: 'Currency', name: 'I_CurrencyStdVH' },
                                             useForValidation: true } ]
       Currency,

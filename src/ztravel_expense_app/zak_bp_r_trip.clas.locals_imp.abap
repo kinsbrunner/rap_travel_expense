@@ -250,19 +250,46 @@ CLASS lhc_zak_r_trip IMPLEMENTATION.
     " Get the root node. In a Fiori Elements UI this will be just one entry. But, when being called via EML or as an API,
     "  several instances of Trip can be requested.
     READ ENTITIES OF ZAK_R_Trip IN LOCAL MODE
-      ENTITY Trip
-      FIELDS ( Status )
-      WITH CORRESPONDING #( keys )
-      RESULT DATA(trips).
+         ENTITY Trip
+         FIELDS ( Status )
+         WITH CORRESPONDING #( keys )
+         RESULT DATA(trips).
 
     " Loop the nodes and set the Mandatory field either to read-only or mandatory based on the
     "  value of Status field
     LOOP AT trips INTO DATA(trip).
-      APPEND VALUE #( %tky = trip-%tky
-                      " This is for preventing Status from being set during Create
-                      %field-Status       = COND #( WHEN trip-status IS INITIAL
-                                                    THEN if_abap_behv=>fc-f-read_only
-                                                    ELSE if_abap_behv=>fc-f-unrestricted ) ) TO result.
+      APPEND VALUE #(
+          %tky            = trip-%tky
+          " This is for preventing Status from being set during Create
+          %field-Status   = COND #( WHEN trip-status IS INITIAL
+                                    THEN if_abap_behv=>fc-f-read_only
+                                    ELSE if_abap_behv=>fc-f-unrestricted )
+
+          " This is for preventing Title from being set after Create
+          %field-Title    = COND #( WHEN trip-status IS INITIAL
+                                    THEN if_abap_behv=>fc-f-mandatory
+                                    ELSE if_abap_behv=>fc-f-read_only )
+
+          " This is for disabling the edit of header fields, for a Reimbursed trip
+          %update         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled
+                                    THEN if_abap_behv=>fc-o-disabled
+                                    ELSE if_abap_behv=>fc-o-enabled )
+
+          " This is for disabling the create button of child nodes, for a Reimbursed trip
+          %assoc-_Expense = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled
+                                    THEN if_abap_behv=>fc-o-disabled
+                                    ELSE if_abap_behv=>fc-o-enabled )
+
+          " This is for disabling the draft edit button, for a Reimbursed trip
+          %action-Edit    = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled
+                                    THEN if_abap_behv=>fc-o-disabled
+                                    ELSE if_abap_behv=>fc-o-enabled )
+
+          " This is for disabling the delete for a Reimbursed trip
+          %delete         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed
+                                    THEN if_abap_behv=>fc-o-disabled
+                                    ELSE if_abap_behv=>fc-o-enabled ) )
+             TO result.
     ENDLOOP.
   ENDMETHOD.
 

@@ -23,19 +23,22 @@ authorization master ( global )
   field ( numbering : managed )
   UUID;
 
-  field ( mandatory ) Title, TripType, StartDate, EndDate; //, Status;
+  field ( mandatory ) TripType, StartDate, EndDate;
 
   create;
-  update;
-  delete;
+  update( features : instance );
+  delete( features : instance );
 
   draft action Activate optimized;
   draft action Discard;
-  draft action Edit;
+  draft action ( features : instance ) Edit;
   draft action Resume;
   draft determine action Prepare;
 
   field ( features : instance ) Status;
+  field ( features : instance, mandatory ) Title;
+
+  association _Expense { create ( features : instance ); with draft; }
 
   validation check_mandatory_fields on save { create; update; }
   validation start_prior_to_end_date on save { create; update; }
@@ -62,8 +65,6 @@ authorization master ( global )
       LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
       LastChangedAt      = LAST_CHANGED_AT;
     }
-
-  association _Expense { create; with draft; }
 
 }
 

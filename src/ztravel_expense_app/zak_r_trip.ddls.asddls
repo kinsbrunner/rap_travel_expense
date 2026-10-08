@@ -20,6 +20,16 @@ define root view entity ZAK_R_TRIP
       trip_type             as TripType,
       status                as Status,
 
+      case status
+        when '10' then 0
+        when '20' then 2
+        when '30' then 3
+        when '40' then 1
+        when '50' then 5
+        when '60' then 5                        
+        else 0
+      end                   as StatusIcon,
+
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CurrencyStdVH', element: 'Currency' },
                                             useForValidation: true } ]
       currency              as Currency,
