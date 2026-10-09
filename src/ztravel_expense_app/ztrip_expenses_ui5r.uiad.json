@@ -24,10 +24,15 @@
   "tiles": [
     {
       "id": "ZTRIP_EXPENSES_UI5R_AL",
-      "tileType": "static",
+      "tileType": "dynamic",
       "isDefault": true,
       "standard": {
-        "title": "Trip Expenses"
+        "title": "Trip Expenses",
+        "icon": "sap-icon://travel-expense-report",
+        "dynamic": {
+          "serviceBaseUrl": "/sap/opu/odata4/sap/zak_ui_trip_o4/srvd/sap/zak_ui_trip_o4/0001/Trip/$count?$filter=Status%20eq%20'50'",
+          "refreshInterval": 10
+        }
       }
     }
   ]
