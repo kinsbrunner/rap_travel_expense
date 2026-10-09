@@ -55,12 +55,13 @@ annotate view ZAK_C_TRIP with
   @UI.identification: [ { position: 60 } ]
   @UI.lineItem: [ { position: 60 } ]
   @UI.selectionField: [ { position: 60 } ]
+  @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false } 
   StartDate;
 
   @EndUserText.label: 'End Date'
   @UI.identification: [ { position: 70 } ]
   @UI.lineItem: [ { position: 70 } ]
-  @UI.selectionField: [ { position: 70 } ]
+//  @UI.selectionField: [ { position: 70 } ]
   EndDate;
 
   @EndUserText.label: 'Reported By'
