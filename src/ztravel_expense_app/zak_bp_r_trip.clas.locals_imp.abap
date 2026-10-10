@@ -380,22 +380,22 @@ CLASS lhc_zak_r_trip IMPLEMENTATION.
                                     ELSE if_abap_behv=>fc-f-read_only )
 
           " This is for disabling the edit of header fields, for a Reimbursed trip
-          %update         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled
+          %update         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
                                     THEN if_abap_behv=>fc-o-disabled
                                     ELSE if_abap_behv=>fc-o-enabled )
 
           " This is for disabling the create button of child nodes, for a Reimbursed trip
-          %assoc-_Expense = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled
+          %assoc-_Expense = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
                                     THEN if_abap_behv=>fc-o-disabled
                                     ELSE if_abap_behv=>fc-o-enabled )
 
           " This is for disabling the draft edit button, for a Reimbursed trip
-          %action-Edit    = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled
+          %action-Edit    = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
                                     THEN if_abap_behv=>fc-o-disabled
                                     ELSE if_abap_behv=>fc-o-enabled )
 
           " This is for disabling the delete for a Reimbursed trip
-          %delete         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed
+          %delete         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-accepted
                                     THEN if_abap_behv=>fc-o-disabled
                                     ELSE if_abap_behv=>fc-o-enabled ) )
              TO result.
