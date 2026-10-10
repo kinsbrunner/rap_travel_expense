@@ -52,6 +52,8 @@ authorization master ( global )
   validation check_start_prior_to_end_date on save { create; update; }
   determination set_initial_status on save { create; }
 
+  action ( features : instance ) reimburse result[1] $self;
+
   side effects
   {
     entity _Expense affects field Total;

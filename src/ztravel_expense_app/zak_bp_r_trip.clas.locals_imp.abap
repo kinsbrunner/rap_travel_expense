@@ -245,7 +245,9 @@ CLASS lhc_zak_r_trip DEFINITION INHERITING FROM cl_abap_behavior_handler.
       set_initial_status FOR DETERMINE ON SAVE
             keys FOR Trip~set_initial_status,
       get_instance_features FOR INSTANCE FEATURES
-            keys REQUEST requested_features FOR Trip RESULT result.
+            keys REQUEST requested_features FOR Trip RESULT result,
+      reimburse FOR MODIFY
+            keys FOR ACTION Trip~reimburse RESULT result.
 ENDCLASS.
 
 CLASS lhc_zak_r_trip IMPLEMENTATION.
@@ -368,37 +370,115 @@ CLASS lhc_zak_r_trip IMPLEMENTATION.
     "  value of Status field
     LOOP AT trips INTO DATA(trip).
       APPEND VALUE #(
-          %tky            = trip-%tky
+          %tky              = trip-%tky
           " This is for preventing Status from being set during Create
-          %field-Status   = COND #( WHEN trip-status IS INITIAL
-                                    THEN if_abap_behv=>fc-f-read_only
-                                    ELSE if_abap_behv=>fc-f-unrestricted )
+          %field-Status     = COND #( WHEN trip-status IS INITIAL
+                                      THEN if_abap_behv=>fc-f-read_only
+                                      ELSE if_abap_behv=>fc-f-unrestricted )
 
           " This is for preventing Title from being set after Create
-          %field-Title    = COND #( WHEN trip-status IS INITIAL
-                                    THEN if_abap_behv=>fc-f-mandatory
-                                    ELSE if_abap_behv=>fc-f-read_only )
+          %field-Title      = COND #( WHEN trip-status IS INITIAL
+                                      THEN if_abap_behv=>fc-f-mandatory
+                                      ELSE if_abap_behv=>fc-f-read_only )
 
           " This is for disabling the edit of header fields, for a Reimbursed trip
-          %update         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
-                                    THEN if_abap_behv=>fc-o-disabled
-                                    ELSE if_abap_behv=>fc-o-enabled )
+          %update           = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled )
 
           " This is for disabling the create button of child nodes, for a Reimbursed trip
-          %assoc-_Expense = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
-                                    THEN if_abap_behv=>fc-o-disabled
-                                    ELSE if_abap_behv=>fc-o-enabled )
+          %assoc-_Expense   = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled )
 
           " This is for disabling the draft edit button, for a Reimbursed trip
-          %action-Edit    = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
-                                    THEN if_abap_behv=>fc-o-disabled
-                                    ELSE if_abap_behv=>fc-o-enabled )
+          %action-Edit      = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-cancelled OR trip-status = zak_if_trip=>co_status-accepted
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled )
 
           " This is for disabling the delete for a Reimbursed trip
-          %delete         = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-accepted
-                                    THEN if_abap_behv=>fc-o-disabled
-                                    ELSE if_abap_behv=>fc-o-enabled ) )
+          %delete           = COND #( WHEN trip-status = zak_if_trip=>co_status-reimbursed OR trip-status = zak_if_trip=>co_status-accepted
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled )
+
+          " Reimburse should only occur if Trip is under Accepted status
+          %action-Reimburse = COND #( WHEN trip-status = zak_if_trip=>co_status-accepted
+                                      THEN if_abap_behv=>fc-o-enabled
+                                      ELSE if_abap_behv=>fc-o-disabled ) )
              TO result.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD reimburse.
+    DATA trips_update TYPE TABLE FOR UPDATE zak_r_trip\\Trip.
+
+    READ ENTITIES OF ZAK_R_Trip IN LOCAL MODE
+         ENTITY Trip
+         FIELDS ( Status )
+         WITH CORRESPONDING #( keys )
+         RESULT DATA(trips)
+         FAILED DATA(read_failed).
+
+    " Keys that do not exist
+    LOOP AT read_failed-trip INTO DATA(read_fail).
+      APPEND VALUE #( %tky  = read_fail-%tky
+                      %fail = read_fail-%fail ) TO failed-trip.
+    ENDLOOP.
+
+    LOOP AT trips INTO DATA(trip).
+      " Re-check the status: feature control is bypassed when called IN LOCAL MODE
+      IF trip-status <> zak_if_trip=>co_status-accepted.
+        APPEND VALUE #( %tky = trip-%tky ) TO failed-trip.
+
+        APPEND VALUE #( %tky            = trip-%tky
+                        %element-Status = if_abap_behv=>mk-on
+                        %msg            = new_message( id       = 'ZMSG_TRIP'
+                                                       number   = 006
+                                                       severity = if_abap_behv_message=>severity-error
+                                                       v1       = |{ trip-uuid }|
+                                                       v2       = |{ trip-Status }| ) ) TO reported-trip.
+        CONTINUE.
+      ENDIF.
+
+      APPEND VALUE #( %tky            = trip-%tky
+                      Status          = zak_if_trip=>co_status-reimbursed
+                      %control-Status = if_abap_behv=>mk-on ) TO trips_update.
+
+    ENDLOOP.
+
+    IF trips_update IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    MODIFY ENTITIES OF zak_r_trip IN LOCAL MODE
+           ENTITY Trip
+           UPDATE FROM trips_update
+           FAILED DATA(update_failed)
+           REPORTED DATA(update_reported).
+
+    LOOP AT update_failed-trip INTO DATA(update_fail).
+      APPEND VALUE #( %tky  = update_fail-%tky
+                      %fail = update_fail-%fail ) TO failed-trip.
+    ENDLOOP.
+
+    LOOP AT update_reported-trip INTO DATA(update_report).
+      APPEND CORRESPONDING #( update_report ) TO reported-trip.
+    ENDLOOP.
+
+    " Return the updated instances (result [1] $self)
+    READ ENTITIES OF zak_r_trip IN LOCAL MODE
+         ENTITY Trip
+         ALL FIELDS
+         WITH CORRESPONDING #( trips_update )
+         RESULT DATA(updated_trips).
+
+    LOOP AT updated_trips INTO DATA(updated_trip).
+      IF line_exists( update_failed-trip[ KEY id COMPONENTS %tky = updated_trip-%tky ] ).
+        CONTINUE.
+      ENDIF.
+
+      APPEND VALUE #( %tky   = updated_trip-%tky
+                      %param = updated_trip ) TO result.
     ENDLOOP.
   ENDMETHOD.
 

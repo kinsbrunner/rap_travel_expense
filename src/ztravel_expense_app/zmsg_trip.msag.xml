@@ -44,6 +44,12 @@
      <MSGNR>005</MSGNR>
      <TEXT>Expense amount must be greater than 0.</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_TRIP</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Trip &amp;1 cannot be reimbursed: status &amp;2 is not Accepted.</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>
