@@ -1,0 +1,151 @@
+managed with additional save implementation in class ZBP_I_TRIPTYPE_S unique;
+strict ( 1 );
+with draft;
+define behavior for ZI_TripTypeTable_S alias TripTypeTableAll
+draft table ZAK_TRIPTYP_D_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+{
+  field ( readonly )
+   SingletonID;
+
+  field ( features : instance )
+   TransportRequestID;
+
+  field ( notrigger )
+   SingletonID,
+   LastChangedAtMax;
+
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit with additional implementation;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare {
+    validation TripType ~ ValidateDataConsistency;
+    validation TripTypeText ~ ValidateDataConsistency;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _TripType { create ( features : instance ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT
+  {
+    create;
+    update;
+  }
+
+  side effects
+  {
+    action SelectCustomizingTransptReq affects
+        $self;
+  }
+
+}
+
+define behavior for ZI_TripType alias TripType ##UNMAPPED_FIELD[SingletonID]
+persistent table ZAK_TRIPTYPE
+draft table ZAK_TRIPTYPE_D
+etag master LocalLastChangedAt
+lock dependent by _TripTypeTableAll
+authorization dependent by _TripTypeTableAll
+{
+  field ( mandatory : create )
+   TripType;
+
+  field ( readonly )
+   SingletonID,
+   LastChangedAt,
+   LocalLastChangedAt;
+
+  field ( readonly : update )
+   TripType;
+
+  field ( notrigger )
+   SingletonID,
+   LastChangedAt,
+   LocalLastChangedAt;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for ZAK_TRIPTYPE
+  {
+    TripType = TRIP_TYPE;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _TripTypeTableAll { with draft; }
+  association _TripTypeText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT
+  {
+    create;
+    update;
+    delete;
+  }
+  validation ValidateDataConsistency on save
+  {
+    create;
+    update;
+  }
+
+}
+
+define behavior for ZI_TripTypeText alias TripTypeText ##UNMAPPED_FIELD[SingletonID]
+persistent table ZAK_TRIPTYPE_T
+draft table ZAK_TRIPTYPE__D
+etag master LocalLastChangedAt
+lock dependent by _TripTypeTableAll
+authorization dependent by _TripTypeTableAll
+{
+  field ( mandatory : create )
+   Langu;
+
+  field ( readonly )
+   SingletonID,
+   TripType,
+   LocalLastChangedAt;
+
+  field ( readonly : update )
+   Langu;
+
+  field ( notrigger )
+   SingletonID,
+   LocalLastChangedAt;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for ZAK_TRIPTYPE_T
+  {
+    Langu = LANGU;
+    TripType = TRIP_TYPE;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _TripTypeTableAll { with draft; }
+  association _TripType { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT
+  {
+    create;
+    update;
+    delete;
+  }
+  validation ValidateDataConsistency on save
+  {
+    create;
+    update;
+  }
+
+}

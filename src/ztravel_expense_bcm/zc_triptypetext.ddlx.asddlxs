@@ -1,0 +1,38 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Trip Type text', 
+    typeNamePlural: 'Trip Type text', 
+    title: {
+      type: #STANDARD, 
+      value: 'Langu'
+    }
+  }
+}
+annotate view ZC_TripTypeText with
+{
+  @UI.facet: [ {
+    id: 'TripTypeText', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'Trip Type text', 
+    position: 1 
+  } ]
+  @UI.identification: [ {
+    position: 1 
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  Langu;
+  
+  @UI.identification: [ {
+    position: 2 , 
+    label: 'Description'
+  } ]
+  @UI.lineItem: [ {
+    position: 2 , 
+    label: 'Description'
+  } ]
+  Description;
+}

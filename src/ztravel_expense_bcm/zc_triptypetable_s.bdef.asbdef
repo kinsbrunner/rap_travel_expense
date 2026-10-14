@@ -1,0 +1,42 @@
+projection implementation in class ZBP_C_TRIPTYPE_S unique;
+strict;
+use draft;
+use side effects;
+define behavior for ZC_TripTypeTable_S alias TripTypeTableAll
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _TripType { create ( augment ); with draft; }
+
+}
+
+define behavior for ZC_TripType alias TripType
+use etag
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _TripTypeTableAll { with draft; }
+  use association _TripTypeText { create; with draft; }
+
+}
+
+define behavior for ZC_TripTypeText alias TripTypeText
+use etag
+{
+  use update;
+  use delete;
+
+  use association _TripTypeTableAll { with draft; }
+  use association _TripType { with draft; }
+
+}

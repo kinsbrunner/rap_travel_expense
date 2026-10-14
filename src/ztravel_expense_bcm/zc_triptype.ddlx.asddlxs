@@ -1,0 +1,50 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Trip Type', 
+    typeNamePlural: 'Trip Type', 
+    title: {
+      type: #STANDARD, 
+      value: 'TripType'
+    }, 
+    description: {
+      type: #STANDARD, 
+      value: 'Description'
+    }
+  }
+}
+annotate view ZC_TripType with
+{
+  @UI.identification: [ {
+    position: 1 
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  @UI.facet: [ {
+    id: 'TripType', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'Trip Type', 
+    position: 1 
+  }, 
+  {
+    id: 'TripTypeText', 
+    type: #LINEITEM_REFERENCE, 
+    label: 'Trip Type text', 
+    position: 2 , 
+    targetElement: '_TripTypeText'
+  } ]
+  TripType;
+  
+  @UI.identification: [ {
+    hidden: true, 
+    position: 2 , 
+    label: 'Description'
+  } ]
+  @UI.lineItem: [ {
+    position: 2 , 
+    label: 'Description'
+  } ]
+  Description;
+}

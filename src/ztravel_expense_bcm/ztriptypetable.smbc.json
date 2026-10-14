@@ -1,0 +1,50 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Trip Type table",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "ZUI_TRIPTYPETABLE_O4",
+    "serviceName": "ZUI_TRIPTYPETABLE_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "TripTypeTableAll",
+    "name": "Trip Type",
+    "transportObject": "ZTRIPTYPETABLET",
+    "configurationGroup": "",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "TripTypeTableAll",
+        "variantManagement": "control",
+        "showTransportSelectionStrip": true
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "TripType",
+        "tableType": "gridTable",
+        "selectAll": true,
+        "rowCountMode": "auto",
+        "frozenColumnCount": 1,
+        "creationModeName": "inlineCreationRows",
+        "createAtEnd": true,
+        "condensedTableLayout": true,
+        "widthIncludingColumnHeader": true
+      },
+      {
+        "entitySet": "TripTypeText",
+        "tableType": "gridTable",
+        "selectAll": true,
+        "threshold": 10,
+        "creationModeName": "inlineCreationRows",
+        "createAtEnd": true,
+        "widthIncludingColumnHeader": true
+      }
+    ]
+  }
+}

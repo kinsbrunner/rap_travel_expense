@@ -1,0 +1,5 @@
+@MappingRole: true
+define role ZI_TripTypeText {
+  grant select on ZI_TripTypeText
+  where INHERITING CONDITIONS FROM ENTITY ZI_TripType;
+}

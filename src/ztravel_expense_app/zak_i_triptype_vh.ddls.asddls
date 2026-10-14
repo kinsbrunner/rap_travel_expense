@@ -7,18 +7,16 @@
 @ObjectModel.resultSet.sizeCategory: #XS
 
 define view entity ZAK_I_TripType_VH
-  as select from DDCDS_CUSTOMER_DOMAIN_VALUE(
-                   p_domain_name : 'ZAK_TRIP_TYPE') as values
+  as select from    zak_triptype   as types
 
-    inner join   DDCDS_CUSTOMER_DOMAIN_VALUE_T(
-                   p_domain_name : 'ZAK_TRIP_TYPE') as texts
-      on  values.domain_name = texts.domain_name
-      and values.value_low   = texts.value_low
-      and texts.language     = $session.system_language
+    left outer join zak_triptype_t as texts
+      on  texts.trip_type = types.trip_type
+      and texts.langu     = $session.system_language
 
 {
       @ObjectModel.text.element: [ 'TripTypeText' ]
-  key values.value_low as TripTypeCode,
+  key types.trip_type   as TripTypeCode,
 
-      texts.text       as TripTypeText
+      @Semantics.text: true
+      texts.description as TripTypeText
 }

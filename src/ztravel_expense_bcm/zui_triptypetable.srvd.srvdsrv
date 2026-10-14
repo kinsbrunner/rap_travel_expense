@@ -1,0 +1,6 @@
+@ObjectModel.leadingEntity.name: 'ZC_TripTypeTable_S'
+define service ZUI_TRIPTYPETABLE {
+  expose ZC_TRIPTYPETABLE_S as TripTypeTableAll;
+  expose ZC_TRIPTYPE as TripType;
+  expose ZC_TRIPTYPETEXT as TripTypeText;
+}
