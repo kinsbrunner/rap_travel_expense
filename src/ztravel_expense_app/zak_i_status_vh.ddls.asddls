@@ -6,6 +6,8 @@
 
 @ObjectModel.resultSet.sizeCategory: #XS
 
+@ObjectModel.dataCategory: #VALUE_HELP
+
 define view entity ZAK_I_Status_VH
   as select from DDCDS_CUSTOMER_DOMAIN_VALUE(
                    p_domain_name : 'ZAK_STATUS') as values

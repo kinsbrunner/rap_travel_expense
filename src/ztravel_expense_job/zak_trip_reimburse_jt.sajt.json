@@ -1,0 +1,23 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Trip reimburse job template",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "ZAK_TRIP_REIMBURSE_JCE"
+  },
+  "parameters": {
+    "singleValueParameters": [
+      {
+        "name": "MODE",
+        "value": ""
+      },
+      {
+        "name": "STATUS",
+        "value": "30"
+      }
+    ]
+  }
+}

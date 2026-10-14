@@ -1,0 +1,14 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Trip application log",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "subobjects": [
+    {
+      "name": "ZAK_TRIP_JOB_EXEC",
+      "description": "Trip job execution logs"
+    }
+  ]
+}
